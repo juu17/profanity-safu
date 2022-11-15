@@ -4,11 +4,11 @@ Profanity is an Ethereum vanity address generation tool. It generates addresses 
 
 ## 2022-11-15
 
-Vulnerabilities were fixed by Juu17
+Vulnerabilities were fixed by Juu17. Any suggestions are welcome!
 
 **Attention!**
 
-Do NOT run this binary on **Windows** because there is no built-in entropy pool for getting random enough numbers. The key random number generator function _random_device_ calls _random_s_(pseudorandom), that will bring vulnerable private keys in front of you.
+Do NOT run release binary on **Windows** because there is no built-in entropy pool for getting random enough numbers. The key random number generator function _random_device_ calls _random_s_(pseudorandom) on Windows, that will bring vulnerable private keys in front of you.
 
 ## 2022-09-15
 
