@@ -141,7 +141,7 @@ std::string getDeviceCacheFilename(cl_device_id & d, const size_t & inverseSize)
 }
 
 int main(int argc, char * * argv) {
-	std::cout << "Profanity SAFU version by Juu17" << "\n";
+	std::cout << "==== Profanity SAFU version by Juu17 ====" << "\n\n";
 	try {
 		ArgParser argp(argc, argv);
 		bool bHelp = false;
@@ -263,7 +263,7 @@ int main(int argc, char * * argv) {
 				}
 			}
 
-			std::cout << "  GPU" << i << ": " << strName << ", " << globalMemSize << " bytes available, " << computeUnits << " compute units (precompiled = " << (precompiled ? "yes" : "no") << ")" << std::endl;
+			std::cout << "  GPU [" << i << "] " << strName << ", " << globalMemSize << " bytes available, " << computeUnits << " compute units (precompiled = " << (precompiled ? "yes" : "no") << ")" << std::endl;
 			vDevices.push_back(vFoundDevices[i]);
 			mDeviceIndex[vFoundDevices[i]] = i;
 		}
