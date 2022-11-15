@@ -49,10 +49,10 @@ static void printResult(cl_ulong4 seed, cl_ulong round, result r, cl_uchar score
 
 	// Print
 	const std::string strVT100ClearLine = "\33[2K\r";
-	std::cout << strVT100ClearLine << "  Time: " << std::setw(5) << seconds << "s Score: " << std::setw(2) << (int) score << " Private: 0x" << strPrivate << ' ';
-
+	
+	std::cout << strVT100ClearLine << " Score: " << std::setw(2) << (int) score << " ";
 	std::cout << mode.transformName();
-	std::cout << ": 0x" << strPublic << std::endl;
+	std::cout << ": 0x" << strPublic<< " PrivateKey: 0x" << strPrivate << " Time: " << seconds << "s" << std::endl;
 }
 
 unsigned int getKernelExecutionTimeMicros(cl_event & e) {
@@ -81,7 +81,7 @@ cl_command_queue Dispatcher::Device::createQueue(cl_context & clContext, cl_devi
 #ifdef PROFANITY_DEBUG
 	cl_command_queue_properties p = CL_QUEUE_PROFILING_ENABLE;
 #else
-	cl_command_queue_properties p = NULL;
+	cl_command_queue_properties p = 0;
 #endif
 
 #ifdef CL_VERSION_2_0
@@ -320,7 +320,7 @@ void Dispatcher::initContinue(Device & d) {
 		OpenCLException::throwIfError("failed to set custom callback during initialization", resCallback);
 	} else {
 		// Printing one whole string at once helps in avoiding garbled output when executed in parallell
-		const std::string strOutput = "  GPU" + toString(d.m_index) + " initialized";
+		const std::string strOutput = "  GPU [" + toString(d.m_index) + "] initialized";
 		std::cout << strOutput << std::endl;
 		clSetUserEventStatus(d.m_eventFinished, CL_COMPLETE);
 	}
