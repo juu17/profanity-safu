@@ -4,3 +4,5 @@
 cache-opencl.*
 bin
 *.x64
+
+.vscode
