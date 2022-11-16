@@ -49,7 +49,7 @@ static void printResult(cl_ulong4 seed, cl_ulong round, result r, cl_uchar score
 
 	// Print
 	const std::string strVT100ClearLine = "\33[2K\r";
-	
+
 	std::cout << strVT100ClearLine << " Score: " << std::setw(2) << (int) score << " ";
 	std::cout << mode.transformName();
 	std::cout << ": 0x" << strPublic<< " PrivateKey: 0x" << strPrivate << " Time: " << seconds << "s" << std::endl;
@@ -114,25 +114,12 @@ cl_ulong4 Dispatcher::Device::createSeed() {
 	cl_ulong lf;
 	cl_ulong rp;
 
-	lf = rd();
-	lf = lf << 32;
-	rp = rd();
-	r.s[0] = lf | rp;
-
-	lf = rd();
-	lf = lf << 32;
-	rp = rd();
-	r.s[1] = lf | rp;
-
-	lf = rd();
-	lf = lf << 32;
-	rp = rd();
-	r.s[2] = lf | rp;
-
-	lf = rd();
-	lf = lf << 32;
-	rp = rd();
-	r.s[3] = lf | rp;
+	for (int i=0; i<4; i++){
+		lf = rd();
+		lf = lf << 32;
+		rp = rd();
+		r.s[i] = lf | rp;
+	}
 
 	std::cout << "Seed: " << r.s[0] << "," << r.s[1] << "," << r.s[2] << "," << r.s[3] << "\n";
 	return r;
@@ -454,7 +441,7 @@ void Dispatcher::printSpeed() {
 		for (auto & e : m_vDevices) {
 			const auto curSpeed = e->m_speed.getSpeed();
 			speedTotal += curSpeed;
-			strGPUs += " GPU" + toString(e->m_index) + ": " + formatSpeed(curSpeed);
+			strGPUs += " GPU [" + toString(e->m_index) + "]: " + formatSpeed(curSpeed);
 			++i;
 		}
 

@@ -2,9 +2,10 @@ CC=g++
 CDEFINES=
 SOURCES=Dispatcher.cpp Mode.cpp precomp.cpp profanity.cpp SpeedSample.cpp
 OBJECTS=$(SOURCES:.cpp=.o)
-EXECUTABLE=profanity.safu.x64
 
 UNAME_S := $(shell uname -s)
+EXECUTABLE=profanity.safu.$(UNAME_S).x64
+
 ifeq ($(UNAME_S),Darwin)
 	LDFLAGS=-framework OpenCL
 	CFLAGS=-c -std=c++11 -Wall -mmmx -O2
@@ -22,5 +23,5 @@ $(EXECUTABLE): $(OBJECTS)
 	$(CC) $(CFLAGS) $(CDEFINES) $< -o $@
 
 clean:
-	rm -rf *.o
-
+	rm -f *.o
+	rm -f cache-opencl.*.*
