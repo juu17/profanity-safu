@@ -1,8 +1,31 @@
-# Makefile artifacts
+# ───────────────────────────── Build artifacts ─────────────────────────────
+# Object files / intermediate output
 *.o
-*.so
-cache-opencl.*
-bin
-*.x64
+*.obj
 
-.vscode
+# Shared / dynamic libraries
+*.so          # Linux / Unix
+*.dylib       # macOS
+*.dll         # Windows
+
+# OpenCL precompiled-kernel cache: cache-opencl.<platform-id>.<hash>
+cache-opencl.*
+
+# Compiled vanity-address binary.
+# The Makefile sets  EXECUTABLE = profanity.safu.$(uname -s).x64 , so the name
+# embeds the build platform:
+#   macOS          → profanity.safu.Darwin.x64
+#   Linux          → profanity.safu.Linux.x64
+#   *BSD / Unix    → profanity.safu.FreeBSD.x64  (etc.)
+#   Windows/MSYS2  → profanity.safu.MINGW64_NT-*.x64
+# A plain  profanity.safu.x64  (manual build) is covered too.
+*.x64
+*.exe
+bin/
+
+# ───────────────────────────── Editor / OS cruft ────────────────────────────
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.vscode/
+.idea/
