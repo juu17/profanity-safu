@@ -97,6 +97,18 @@ cl_kernel Dispatcher::Device::createKernel(cl_program & clProgram, const std::st
 	return ret == NULL ? throw std::runtime_error("failed to create kernel \"" + s + "\"") : ret;
 }
 
+// Build gate: on MinGW, libstdc++'s std::random_device was a FIXED-SEED
+// mt19937 — the same sequence every process run — until GCC 9.2 (GCC PR
+// libstdc++/85494). Seeding keys from it yields predictable private keys, the
+// very class of flaw this fork exists to remove. Refuse to compile on that
+// toolchain rather than ship a binary that looks random and is not. Scoped to
+// libstdc++ (__GLIBCXX__) so a Clang/libc++ Windows build is unaffected, and
+// macOS/Linux are never touched.
+#if defined(__MINGW32__) && defined(__GLIBCXX__)
+#  if !defined(__GNUC__) || (__GNUC__ < 9) || (__GNUC__ == 9 && __GNUC_MINOR__ < 2)
+#    error "std::random_device is non-cryptographic on this MinGW libstdc++ (< GCC 9.2, PR 85494); it would generate predictable keys. Upgrade to GCC >= 9.2, or do not build for Windows (see README)."
+#  endif
+#endif
 cl_ulong4 Dispatcher::Device::createSeed() {
 #ifdef PROFANITY_DEBUG
 	cl_ulong4 r;
