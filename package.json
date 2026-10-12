@@ -1,0 +1,24 @@
+{
+  "name": "profanity-safu",
+  "version": "2.2.1",
+  "description": "GPU-accelerated Ethereum vanity address generator (OpenCL) with the Profanity CSPRNG flaw fixed.",
+  "license": "MIT",
+  "private": true,
+  "author": "Juu17 (https://github.com/juu17)",
+  "homepage": "https://github.com/juu17/profanity-safu#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juu17/profanity-safu.git"
+  },
+  "bugs": {
+    "url": "https://github.com/juu17/profanity-safu/issues"
+  },
+  "os": [
+    "darwin",
+    "linux"
+  ],
+  "scripts": {
+    "build": "make",
+    "clean": "make clean"
+  }
+}

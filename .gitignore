@@ -29,3 +29,6 @@ bin/
 Thumbs.db
 .vscode/
 .idea/
+
+# Node (package.json metadata only — no runtime deps)
+node_modules/

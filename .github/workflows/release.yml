@@ -1,0 +1,80 @@
+name: Build and Release
+
+# Build the binaries on every push to master (and on demand), then publish them
+# to a GitHub Release tagged with the version from package.json, for download.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+# Required for softprops/action-gh-release to create/update a Release.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build (${{ matrix.label }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            label: linux
+            artifact: profanity.safu.Linux.x64
+          # Intel runner on purpose: the Makefile uses -mmmx and names the
+          # output *.x64, so the build is x86-64. Apple-Silicon runners reject
+          # -mmmx. An arm64 macOS binary would need a Makefile change.
+          - os: macos-13
+            label: macos
+            artifact: profanity.safu.Darwin.x64
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Install OpenCL (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ocl-icd-opencl-dev opencl-headers
+
+      - name: Build
+        run: make
+
+      - name: Verify the binary built
+        run: |
+          test -f "${{ matrix.artifact }}"
+          file "${{ matrix.artifact }}"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: ${{ matrix.artifact }}
+          if-no-files-found: error
+
+  release:
+    name: Publish release
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Read version from package.json
+        id: meta
+        run: echo "version=$(jq -r .version package.json)" >> "$GITHUB_OUTPUT"
+
+      - name: Download built binaries
+        uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Publish binaries to GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.meta.outputs.version }}
+          name: Profanity SAFU v${{ steps.meta.outputs.version }}
+          files: dist/*
+          fail_on_unmatched_files: true
